@@ -1,4 +1,4 @@
-// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2015 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _GRAPHICS_GL2PROGRAM_H
@@ -21,7 +21,7 @@ namespace Graphics {
 		class Program {
 		public:
 			Program();
-			Program(const std::string &name, const std::string &defines, const bool bHasGeomShader = false);
+			Program(const std::string &name, const std::string &defines);
 			virtual ~Program();
 			void Reload();
 			virtual void Use();
@@ -68,7 +68,6 @@ namespace Graphics {
 			std::string m_name;
 			std::string m_defines;
 			GLuint m_program;
-			const bool m_bHasGeomShader;
 		};
 
 	}

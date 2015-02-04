@@ -1,4 +1,4 @@
-// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2015 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "Ship.h"
@@ -17,7 +17,7 @@
 void CargoBody::Save(Serializer::Writer &wr, Space *space)
 {
 	DynamicBody::Save(wr, space);
-	m_cargo.Save(wr);
+	Pi::luaSerializer->WrLuaRef(m_cargo, wr);
 	wr.Float(m_hitpoints);
 	wr.Float(m_selfdestructTimer);
 	wr.Bool(m_hasSelfdestruct);
@@ -26,7 +26,7 @@ void CargoBody::Save(Serializer::Writer &wr, Space *space)
 void CargoBody::Load(Serializer::Reader &rd, Space *space)
 {
 	DynamicBody::Load(rd, space);
-	m_cargo.Load(rd);
+	Pi::luaSerializer->RdLuaRef(m_cargo, rd);
 	Init();
 	m_hitpoints = rd.Float();
 	m_selfdestructTimer = rd.Float();

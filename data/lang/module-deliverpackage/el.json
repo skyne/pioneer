@@ -21,7 +21,7 @@
    },
    "DENY_1" : {
       "description" : "",
-      "message" : "Come back when you have some qualifications."
+      "message" : "Επιστρέψτε όταν έχετε επαρκή προσόντα."
    },
    "DENY_2" : {
       "description" : "",
@@ -253,11 +253,7 @@
    },
    "FLAVOUR_9_WHYSOMUCHTEXT" : {
       "description" : "",
-      "message" : "Our livelyhood depends on it."
-   },
-   "HANG_UP" : {
-      "description" : "",
-      "message" : "Hang up."
+      "message" : "Our livelihood depends on it."
    },
    "HOW_SOON_MUST_IT_BE_DELIVERED" : {
       "description" : "",

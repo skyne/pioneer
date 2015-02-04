@@ -1,4 +1,4 @@
-// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2015 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #ifndef _OGL_STARFIELD_MATERIAL_H
@@ -21,13 +21,13 @@ namespace Graphics {
 			}
 
 			virtual void Apply() {
-				glEnable(GL_VERTEX_PROGRAM_POINT_SIZE_ARB);
+				glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 				m_program->Use();
 				m_program->emission.Set(this->emissive);
 			}
 
 			virtual void Unapply() {
-				glDisable(GL_VERTEX_PROGRAM_POINT_SIZE_ARB);
+				glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
 			}
 		};
 	}

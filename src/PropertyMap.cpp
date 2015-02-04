@@ -1,8 +1,9 @@
-// Copyright © 2008-2014 Pioneer Developers. See AUTHORS.txt for details
+// Copyright © 2008-2015 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
 #include "PropertyMap.h"
 #include "LuaUtils.h"
+#include "Pi.h"
 
 PropertyMap::PropertyMap(LuaManager *lua)
 {
@@ -26,4 +27,15 @@ void PropertyMap::SendSignal(const std::string &k)
 void PropertyMap::PushLuaTable()
 {
 	m_table.PushCopyToStack();
+}
+
+void PropertyMap::Save(Serializer::Writer &wr)
+{
+	Pi::luaSerializer->WrLuaRef(m_table, wr);
+}
+
+
+void PropertyMap::Load(Serializer::Reader &rd)
+{
+	Pi::luaSerializer->RdLuaRef(m_table, rd);
 }
