@@ -59,6 +59,11 @@ void LuaRef::CheckCopyCount() {
 
 LuaRef::LuaRef(lua_State * l, int index): m_lua(l), m_id(0) {
 	assert(m_lua && index);
+	if (index == LUA_NOREF) {
+		m_copycount = new int(0);
+		return;
+	}
+
 	index = lua_absindex(m_lua, index);
 
 	PushGlobalToStack();
@@ -75,5 +80,65 @@ void LuaRef::PushCopyToStack() const {
 	PushGlobalToStack();
 	lua_rawgeti(m_lua, -1, m_id);
 	lua_remove(m_lua, -2);
+}
+
+void LuaRef::Save(Serializer::Writer &wr)
+{
+	assert(m_lua && m_id != LUA_NOREF);
+
+	LUA_DEBUG_START(m_lua);
+
+	lua_getfield(m_lua, LUA_REGISTRYINDEX, "PiSerializer");
+	LuaSerializer *serializer = static_cast<LuaSerializer*>(lua_touserdata(m_lua, -1));
+	lua_pop(m_lua, 1);
+
+	if (!serializer) {
+		LUA_DEBUG_END(m_lua, 0);
+		return;
+	}
+
+	std::string out;
+	PushCopyToStack();
+	serializer->pickle(m_lua, -1, out);
+	lua_pop(m_lua, 1);
+	wr.String(out);
+
+	LUA_DEBUG_END(m_lua, 0);
+}
+
+void LuaRef::Load(Serializer::Reader &rd)
+{
+	std::string pickled = rd.String();
+
+	LUA_DEBUG_START(m_lua);
+
+	lua_getfield(m_lua, LUA_REGISTRYINDEX, "PiSerializer");
+	LuaSerializer *serializer = static_cast<LuaSerializer*>(lua_touserdata(m_lua, -1));
+	lua_pop(m_lua, 1);
+
+	if (!serializer) {
+		LUA_DEBUG_END(m_lua, 0);
+		return;
+	}
+
+	serializer->unpickle(m_lua, pickled.c_str()); // loaded
+	lua_getfield(m_lua, LUA_REGISTRYINDEX, "PiLuaRefLoadTable"); // loaded, reftable
+	lua_pushvalue(m_lua, -2); // loaded, reftable, copy
+	lua_gettable(m_lua, -2);  // loaded, reftable, luaref
+	// Check whether this table has been referenced before
+	if (lua_isnil(m_lua, -1)) {
+		// If not, mark it as referenced
+		*this = LuaRef(m_lua, -3);
+		lua_pushvalue(m_lua, -3);
+		lua_pushlightuserdata(m_lua, this);
+		lua_settable(m_lua, -4);
+	} else {
+		LuaRef *origin = static_cast<LuaRef *>(lua_touserdata(m_lua, -1));
+		*this = *origin;
+	}
+
+	lua_pop(m_lua, 3);
+
+	LUA_DEBUG_END(m_lua, 0);
 }
 

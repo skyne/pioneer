@@ -22,6 +22,11 @@ public:
 
 	lua_State * GetLua() const { return m_lua; }
 
+	bool IsValid() const { return m_lua && m_id != LUA_NOREF; }
+
+	void Save(Serializer::Writer &wr);
+	void Load(Serializer::Reader &rd);
+
 private:
 	lua_State * m_lua;
 	int m_id;
